@@ -1,5 +1,5 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+Test end-to-end — ini yang paling penting sekarang. Coba submit form penyuluh dan cek apakah data masuk ke Spreadsheet. Kalau belum dicoba, harus dicoba dulu sebelum lanjut.
+Supabase Auth — login admin yang sesungguhnya, sekarang masih hardcode admin@ymtm.id.
+ChatGPT API — generate artikel dari narasi penyuluh, sekarang masih simulasi di ChatGPTPanel.
+WordPress API — publish artikel ke website.
+YouTube/TikTok/Instagram/Facebook API — distribusi video & foto ke platform.
