@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 
 const navItems = [
@@ -34,61 +35,113 @@ const navItems = [
   },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
     return pathname.startsWith(href);
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/admin/login");
+  };
+
   return (
-    <aside className="w-64 shrink-0 h-screen bg-white border-r border-gray-100 flex flex-col sticky top-0">
-      {/* Logo */}
-      <div className="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
-        <Image
-          src="/images/logo-ymtm-hijau.png"
-          alt="Logo YMTM"
-          width={36}
-          height={36}
-          className="object-contain"
+    <>
+      {/* Overlay gelap — hanya muncul di mobile saat sidebar terbuka */}
+      {isOpen && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
         />
-        <div>
-          <p className="text-sm font-bold text-gray-800 leading-tight">InfoTani</p>
-          <p className="text-[10px] text-gray-400 leading-tight">Panel Admin</p>
-        </div>
-      </div>
+      )}
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
-        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-2">Menu</p>
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
-              isActive(item.href)
-                ? "bg-[#5CB85C]/10 text-[#5CB85C]"
-                : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-            }`}
+      <aside
+        className={`w-64 shrink-0 h-screen bg-white border-l md:border-l-0 md:border-r border-gray-100 flex flex-col
+        fixed md:sticky top-0 right-0 md:right-auto z-50 md:z-auto
+        transition-transform duration-300 ease-in-out
+        ${isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}`}
+      >
+        {/* Logo + tombol close (mobile) */}
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/images/logo-ymtm-hijau.png"
+              alt="Logo YMTM"
+              width={36}
+              height={36}
+              className="object-contain"
+            />
+            <div>
+              <p className="text-sm font-bold text-gray-800 leading-tight">InfoTani</p>
+              <p className="text-[10px] text-gray-400 leading-tight">Panel Admin</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="md:hidden w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors"
           >
-            <span className={isActive(item.href) ? "text-[#5CB85C]" : "text-gray-400"}>
-              {item.icon}
-            </span>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
-      {/* Bottom - back to site */}
-      <div className="px-3 py-4 border-t border-gray-100">
-        <Link
-          href="/"
-          className="flex items-center justify-center gap-3 px-3 py-2.5 rounded-xl text-xm text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-150"
-        >
-          InfoTani YMTM
-        </Link>
-      </div>
-    </aside>
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
+          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 mb-2">Menu</p>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
+                isActive(item.href)
+                  ? "bg-[#5CB85C]/10 text-[#5CB85C]"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+              }`}
+            >
+              <span className={isActive(item.href) ? "text-[#5CB85C]" : "text-gray-400"}>
+                {item.icon}
+              </span>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Logout — hanya tampil di mobile, karena di desktop sudah ada di Header */}
+        <div className="px-3 py-3 border-t border-gray-100 md:hidden">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-50 hover:text-red-500 transition-all duration-150"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+            </svg>
+            Logout
+          </button>
+        </div>
+
+        {/* Bottom - back to site */}
+        <div className="px-3 py-4 border-t border-gray-100">
+          <Link
+            href="/"
+            onClick={onClose}
+            className="flex items-center justify-center gap-3 px-3 py-2.5 rounded-xl text-xm text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all duration-150"
+          >
+            InfoTani YMTM
+          </Link>
+        </div>
+      </aside>
+    </>
   );
 }

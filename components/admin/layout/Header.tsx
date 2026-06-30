@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 
 const pageTitles: Record<string, { title: string; desc: string }> = {
@@ -12,9 +13,10 @@ const pageTitles: Record<string, { title: string; desc: string }> = {
 
 interface HeaderProps {
   pathname: string;
+  onMenuClick: () => void;
 }
 
-export default function Header({ pathname }: HeaderProps) {
+export default function Header({ pathname, onMenuClick }: HeaderProps) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -30,17 +32,29 @@ const handleLogout = async () => {
 };
 
   return (
-    <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 shrink-0 z-20">
-      {/* Page title */}
-      <div>
+    <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-6 shrink-0 z-20">
+      {/* Logo — hanya tampil di mobile */}
+      <div className="flex items-center gap-2.5 md:hidden">
+        <Image
+          src="/images/logo-ymtm-hijau.png"
+          alt="Logo YMTM"
+          width={28}
+          height={28}
+          className="object-contain"
+        />
+        <p className="text-sm font-bold text-gray-800 leading-tight">InfoTani</p>
+      </div>
+
+      {/* Page title — hanya tampil di desktop */}
+      <div className="hidden md:block">
         <h1 className="text-sm font-bold text-gray-800 leading-tight">{pageInfo.title}</h1>
         {pageInfo.desc && (
           <p className="text-xs text-gray-400 leading-tight">{pageInfo.desc}</p>
         )}
       </div>
 
-      {/* Right actions */}
-      <div className="flex items-center gap-3">
+      {/* Right actions — desktop lengkap */}
+      <div className="hidden md:flex items-center gap-3">
         {/* Notifikasi */}
         <button className="relative w-9 h-9 rounded-xl bg-gray-50 hover:bg-gray-100 flex items-center justify-center transition-colors">
           <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -73,6 +87,16 @@ const handleLogout = async () => {
           </svg>
         </button>
       </div>
+
+      {/* Hamburger — hanya tampil di mobile */}
+      <button
+        onClick={onMenuClick}
+        className="md:hidden w-9 h-9 rounded-xl bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-500 transition-colors"
+      >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+        </svg>
+      </button>
     </header>
   );
 }
