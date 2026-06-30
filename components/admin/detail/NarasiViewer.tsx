@@ -140,7 +140,7 @@ export default function NarasiViewer({ kiriman, isiCerita, onIsiCeritaChange, ju
                   </div>
                   <div>
                     <p className="text-sm flex justify-start font-medium text-gray-700">Video {i + 1}</p>
-                    <p className="text-xs text-gray-400 truncate max-w-xs">{url}</p>
+                    {/* <p className="text-xs text-gray-400 truncate max-w-xs">{url}</p> */}
                   </div>
                 </div>
                 <span className="text-xs font-semibold text-purple-500 group-hover:text-purple-700 transition-colors flex items-center gap-1">
