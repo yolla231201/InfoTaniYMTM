@@ -2,7 +2,7 @@ import { PenyuluhFormData } from "../types";
 
 interface StepNarasiProps {
   data: PenyuluhFormData;
-  onChange: (field: keyof PenyuluhFormData , value: string) => void;
+  onChange: (field: keyof PenyuluhFormData, value: string) => void;
   onNext: () => void;
   onBack: () => void;
 }
@@ -37,7 +37,16 @@ export default function StepNarasi({ data, onChange, onNext, onBack }: StepNaras
         <textarea
           required
           rows={10}
-          placeholder="Ceritakan kegiatan Anda di lapangan secara detail. Apa yang dilakukan, siapa yang hadir, bagaimana hasilnya..."
+          placeholder="Tulis cerita kegiatan Anda secara lengkap, ikuti panduan ini:
+
+- Jenis Kegiatan: (contoh: panen raya, pelatihan, bagi bibit, bikin lahan contoh)
+- Lokasi: (nama desa, kecamatan, kabupaten)
+- Tanggal Kegiatan:
+- Kondisi Sebelumnya: (contoh: kekeringan, banyak hama, pupuk mahal)
+- Jumlah & Hasil Kegiatan: (contoh: diikuti 40 petani, luas lahan 2 hektar, 500 bibit dibagikan)
+- Nama Petani/Warga & Kata-katanya: (boleh tulis ucapan langsung dari mereka)
+- Nama Staf Lapangan & Kata-katanya:
+- Harapan Selanjutnya untuk Desa Ini:"
           value={data.isiCerita}
           onChange={(e) => onChange("isiCerita", e.target.value)}
           className={`${inputClass} resize-none`}
