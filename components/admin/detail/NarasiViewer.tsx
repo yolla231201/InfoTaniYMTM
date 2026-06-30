@@ -65,7 +65,7 @@ export default function NarasiViewer({ kiriman, isiCerita, onIsiCeritaChange, ju
       </div>
 
       {/* Info grid */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         {[
           { label: "Penyuluh", value: kiriman.namaLengkap },
           { label: "No. HP", value: kiriman.nomorHP },
